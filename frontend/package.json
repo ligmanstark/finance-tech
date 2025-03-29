@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@primeuix/themes": "^1.0.0",
+    "@primevue/forms": "^4.3.3",
     "@tailwindcss/vite": "^4.0.17",
     "chart.js": "^4.4.8",
     "pinia": "^3.0.1",
@@ -31,6 +32,7 @@
     "@vitest/eslint-plugin": "^1.1.36",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/test-utils": "^2.4.6",
+    "dotenv": "^16.4.7",
     "eslint": "^9.21.0",
     "eslint-plugin-oxlint": "^0.15.13",
     "eslint-plugin-vue": "~10.0.0",
