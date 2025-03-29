@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <AppLayout>
-      <RouterView />
+      <transition>
+        <RouterView />
+      </transition>
     </AppLayout>
   </div>
 </template>
