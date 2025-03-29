@@ -8,7 +8,7 @@ export default {
 </script>
 
 <template>
-  <div class="bg-gray-400/500">
+  <div>
     <AppHeader />
     <main class="container min-h-screen mx-auto mt-20 mb-4">
       <slot />
