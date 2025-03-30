@@ -3,21 +3,21 @@ import { Utils } from '@/shared/utils.js'
 
 const barLinesChart = (node) => {
   const DATA_COLUMN = 6
-  const NUMBER_CFG = { count: DATA_COLUMN, min: -100, max: 100 }
+  const NUMBER_CFG = { count: DATA_COLUMN, min: 0, max: 100 }
   const labels = Utils.months(6)
   const content = {
     labels: labels,
     datasets: [
       {
         label: 'Количество промывок',
-        data: Utils.numbers(DATA_COLUMN, -100, 100),
+        data: Utils.numbers(DATA_COLUMN, 0, 100),
         borderColor: Utils.randColor(),
         backgroundColor: Utils.randColor(),
         order: 1,
       },
       {
         label: 'Количество техники',
-        data: Utils.numbers(DATA_COLUMN, -100, 100),
+        data: Utils.numbers(DATA_COLUMN, 0, 100),
         borderColor: Utils.randColor(),
         backgroundColor: Utils.randColor(),
         order: 0,
