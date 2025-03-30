@@ -23,7 +23,6 @@ export default {
     const idBar = document.querySelector('#bar')
     const idRadar = document.querySelector('#radar')
     const idBarLines = document.querySelector('#line')
-
     barChartCreator(idBar, barData)
     radarChartCreator(idRadar, radarData)
     barLinesChart(idBarLines)
