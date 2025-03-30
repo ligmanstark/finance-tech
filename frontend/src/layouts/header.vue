@@ -4,7 +4,9 @@
   >
     <div class="flex justify-between items-center">
       <div />
-      <h1 class="font-bold text-xl leading-tight">finance-tech app</h1>
+      <h1 class="font-bold text-xl leading-tight">
+        <RouterLink to="/"> finance-tech app </RouterLink>
+      </h1>
       <Button
         size="small"
         variant="outlined"
