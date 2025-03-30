@@ -43,6 +43,7 @@ import UiHeading from '@/shared/components/typografi/UiHeading.vue'
 import UiParagraph from '@/shared/components/typografi/UiParagraph.vue'
 import { mapActions, mapState } from 'pinia'
 import { useDaily } from '@/entities/daily.store.js'
+import { countrys } from '@/shared/const.js'
 
 export default {
   name: 'DailyApp',
@@ -75,21 +76,7 @@ export default {
       }
     },
     getCountryCode(currencyCode) {
-      const map = {
-        USD: 'us',
-        EUR: 'eu',
-        RUB: 'ru',
-        GBP: 'gb',
-        CNY: 'cn',
-        JPY: 'jp',
-        CAD: 'ca',
-        AUD: 'au',
-        CHF: 'ch',
-        TRY: 'tr',
-        KZT: 'kz',
-        UAH: 'ua',
-      }
-      return map[currencyCode] || 'un'
+      return countrys[currencyCode] || 'un'
     },
     getFlagUrl(currencyCode) {
       return `https://flagcdn.com/w40/${this.getCountryCode(currencyCode)}.png`
