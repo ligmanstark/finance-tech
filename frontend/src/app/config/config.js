@@ -20,4 +20,13 @@ const sizes = {
   600: ['1.5rem', lineHeight[700]], // 24px
 }
 
+//
+// 'h-100': ['1rem', lineHeight[300]], // 16px
+//   'h-150': ['1.125rem', lineHeight[500]], // 18px
+//   'h-200': ['1.5rem', lineHeight[700]], // 24px
+//   'h-300': ['1.875rem', lineHeight[800]], // 30px
+//   'h-400': ['2.25rem', lineHeight[900]], // 36px
+//   'h-500': ['2.75rem', lineHeight[1000]], // 44px
+//   'h-600': ['3.375rem', lineHeight[1100]], // 54px
+
 export { sizes }

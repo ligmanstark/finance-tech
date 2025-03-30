@@ -4,19 +4,19 @@
     class="text-gray-900"
     :class="[
       {
-        'text-400 lg:text-500 2xl:text-600': size === '600',
+        'text-[1.125rem] lg:text-[1.25rem] 2xl:text-[1.5rem]': size === '600',
       }, // 24px
       {
-        'text-300 lg:text-body-400 2xl:text-500': size === '500',
+        'text-1rem lg:text-[1.125rem] 2xl:text-[1.25rem]': size === '500',
       }, // 20px
       {
-        'text-200 lg:text-300 2xl:text-400': size === '400',
+        'text-[0.875rem] lg:text-[1rem] 2xl:text-[1.125rem]': size === '400',
       }, // 18px
       {
-        'text-200 lg:text-300': size === '300',
+        'text-[0.875rem] lg:text-[1rem]': size === '300',
       }, // 16px
       {
-        'text-200': size === '200',
+        'text-[0.875rem]': size === '200',
       }, // 14px
     ]"
   >

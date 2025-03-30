@@ -4,19 +4,19 @@
     class="font-semibold text-twilight-900"
     :class="[
       {
-        'text-300 md:text-h-400 lg:text-h-500 2xl:text-h-600': size === '600',
+        'text-[1.875rem] md:text-[2.25rem] lg:text-[2.75rem] 2xl:text-[3.375rem]': size === '600',
       }, // H1
       {
-        'text-h-300 md:text-h-400 2xl:text-h-500': size === '500',
+        'text-[1.875rem] md:text-[2.25rem] 2xl:text-[2.75rem]': size === '500',
       }, // H2
       {
-        'text-h-200 md:text-h-300 2xl:text-h-400': size === '400',
+        'text-[1.5rem] md:text-[1.875rem] 2xl:text-[2.25rem]': size === '400',
       }, // H3
       {
-        'text-h-150 lg:text-h-200 2xl:text-h-300': size === '300',
+        'text-[1.125rem] lg:text-[1.5rem] 2xl:text-[1.875rem]': size === '300',
       }, // H4
       {
-        'text-h-100 md:text-h-150': size === '200',
+        'text-[1rem] md:text-[1.125rem]': size === '200',
       }, // H5
     ]"
   >

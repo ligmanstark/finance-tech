@@ -22,6 +22,12 @@ const router = createRouter({
       beforeEnter: (to, from, next) => guard(to, from, next),
     },
     {
+      path: '/daily',
+      name: 'daily',
+      component: () => import('@/pages/daily/index.vue'),
+      beforeEnter: (to, from, next) => guard(to, from, next),
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/pages/auth/index.vue'),
