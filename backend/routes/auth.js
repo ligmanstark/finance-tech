@@ -20,6 +20,7 @@ router.get('/profile', verifyToken, (req, res) => {
       role: req.user.role
     }
   });
+
 });
 
 // Admin only routes
