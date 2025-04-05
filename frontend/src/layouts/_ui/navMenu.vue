@@ -1,6 +1,6 @@
 <template>
-  <nav :key="link.id" v-for="link in links">
-    <RouterLink :to="link.to">{{ link.name }} </RouterLink>
+  <nav class="flex flex-row gap-6">
+    <RouterLink :key="link.id" v-for="link in links" :to="link.to">{{ link.name }} </RouterLink>
   </nav>
 </template>
 <script>
