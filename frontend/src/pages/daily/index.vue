@@ -42,8 +42,9 @@ import UiSection from '@/shared/components/semantic/UiSection.vue'
 import UiHeading from '@/shared/components/typografi/UiHeading.vue'
 import UiParagraph from '@/shared/components/typografi/UiParagraph.vue'
 import { mapActions, mapState } from 'pinia'
-import { useDaily } from '@/entities/daily.store.js'
+import { useDaily } from '@/entities/store/daily.store.js'
 import { countrys } from '@/shared/const.js'
+import { Auth } from '@/entities/store/auth.store.js'
 
 export default {
   name: 'DailyApp',
@@ -61,6 +62,7 @@ export default {
   },
   methods: {
     ...mapActions(useDaily, ['getDaily']),
+    ...mapActions(Auth, ['postRefreshToken']),
     async fetchData() {
       try {
         await this.getDaily()
@@ -84,6 +86,11 @@ export default {
   },
   mounted() {
     this.fetchData()
+  },
+  updated() {
+    setTimeout(() => {
+      this.methods.postRefreshToken()
+    }, 1000)
   },
 }
 </script>

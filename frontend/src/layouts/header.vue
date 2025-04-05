@@ -8,15 +8,19 @@
         <RouterLink to="/"> finance-tech app </RouterLink>
       </h1>
       <Button
+        v-slot="slotProps"
         size="small"
         variant="outlined"
-        class="w-20 [&]:!text-white [&]:!border-white"
-        label="Github"
-        as="a"
-        target="_blank"
-        href="https://github.com/"
-        rel="noopener"
-      />
+        class="w-20 [&]:text-white [&]:border"
+        asChild
+      >
+        <RouterLink
+          class="w-20 rounded-sm hover:bg-white hover:text-green-400 hover:border-green-400 text-white border"
+          :class="slotProps"
+          to="/login"
+          >Войти</RouterLink
+        >
+      </Button>
     </div>
   </header>
 </template>

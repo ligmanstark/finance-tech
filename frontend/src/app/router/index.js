@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const isAuth = () => {
-  return !!localStorage.getItem('auth')
+  return !!localStorage.getItem('user')
 }
 
 const guard = (to, from, next) => {
@@ -19,7 +19,6 @@ const router = createRouter({
       path: '/',
       name: '/',
       component: () => import('@/pages/index/index.vue'),
-      beforeEnter: (to, from, next) => guard(to, from, next),
     },
     {
       path: '/daily',
@@ -30,7 +29,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('@/pages/auth/index.vue'),
+      component: () => import('@/pages/auth/login.vue'),
     },
   ],
 })

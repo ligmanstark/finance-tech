@@ -1,23 +1,24 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 
-const generateTokens = (userId) => {
+// Generate tokens
+const generateTokens = (user) => {
   const accessToken = jwt.sign(
-    { userId },
+    { _id: user._id },
     process.env.JWT_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION || '15m' }
   );
 
   const refreshToken = jwt.sign(
-    { userId },
+    { _id: user._id },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || '7d' }
   );
 
   return { accessToken, refreshToken };
 };
 
+// Register new user
 exports.register = async (req, res) => {
   try {
     const { email, password, role } = req.body;
@@ -26,15 +27,6 @@ exports.register = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
-    }
-
-    // If role is specified, check if requester is admin
-    if (role && role !== 'user') {
-      if (!req.user || !req.user.hasRole('admin')) {
-        return res.status(403).json({
-          message: 'Only admins can create users with elevated roles'
-        });
-      }
     }
 
     // Create new user
@@ -46,34 +38,28 @@ exports.register = async (req, res) => {
     await user.save();
 
     // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user._id);
+    const { accessToken, refreshToken } = generateTokens(user);
 
     // Save refresh token to user
     user.refreshToken = refreshToken;
     await user.save();
 
-    // Set refresh token in HTTP-only cookie
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-    });
-
     res.status(201).json({
       message: 'User registered successfully',
-      accessToken,
       user: {
         id: user._id,
         email: user.email,
         role: user.role
-      }
+      },
+      accessToken,
+      refreshToken
     });
   } catch (error) {
     res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 };
 
+// Login user
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -91,48 +77,42 @@ exports.login = async (req, res) => {
     }
 
     // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user._id);
+    const { accessToken, refreshToken } = generateTokens(user);
 
     // Save refresh token to user
     user.refreshToken = refreshToken;
     await user.save();
 
-    // Set refresh token in HTTP-only cookie
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-    });
-
     res.json({
       message: 'Login successful',
-      accessToken,
       user: {
         id: user._id,
         email: user.email,
         role: user.role
-      }
+      },
+      accessToken,
+      refreshToken
     });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error: error.message });
   }
 };
 
+// Refresh token
 exports.refreshToken = async (req, res) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    const { refreshToken } = req.body;
 
     if (!refreshToken) {
-      return res.status(401).json({ message: 'Refresh token not found' });
+      return res.status(400).json({ message: 'Refresh token is required' });
     }
 
     // Verify refresh token
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
-    // Find user
+    // Find user and verify refresh token matches
     const user = await User.findOne({
-      _id: decoded.userId,
+      _id: decoded._id,
       refreshToken: refreshToken
     });
 
@@ -141,36 +121,36 @@ exports.refreshToken = async (req, res) => {
     }
 
     // Generate new tokens
-    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user._id);
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
 
     // Update refresh token
     user.refreshToken = newRefreshToken;
     await user.save();
 
-    // Set new refresh token in cookie
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-    });
-
     res.json({
       accessToken,
+      refreshToken: newRefreshToken,
       user: {
         id: user._id,
         email: user.email,
         role: user.role
-      }
+      },
     });
   } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        message: 'Refresh token expired',
+        expiredAt: error.expiredAt
+      });
+    }
     res.status(401).json({ message: 'Invalid refresh token' });
   }
 };
 
+// Logout user
 exports.logout = async (req, res) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    const { refreshToken } = req.body;
 
     if (refreshToken) {
       // Find user and remove refresh token
@@ -180,20 +160,23 @@ exports.logout = async (req, res) => {
       );
     }
 
-    // Clear refresh token cookie
-    res.clearCookie('refreshToken', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
-    });
-
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error logging out', error: error.message });
   }
 };
 
-// Admin only routes
+// Get user profile
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password -refreshToken');
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching profile', error: error.message });
+  }
+};
+
+// Get all users (admin only)
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}, '-password -refreshToken');
@@ -203,6 +186,7 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+// Update user role (admin only)
 exports.updateUserRole = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -212,22 +196,17 @@ exports.updateUserRole = async (req, res) => {
       return res.status(400).json({ message: 'Invalid role' });
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true, select: '-password -refreshToken' }
+    );
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    user.role = role;
-    await user.save();
-
-    res.json({
-      message: 'User role updated successfully',
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role
-      }
-    });
+    res.json(user);
   } catch (error) {
     res.status(500).json({ message: 'Error updating user role', error: error.message });
   }
