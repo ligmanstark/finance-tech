@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     ...mapActions(useDaily, ['getDaily']),
-    ...mapActions(Auth, ['postRefreshToken']),
+    ...mapActions(Auth, ['autoRefreshToken']),
     async fetchData() {
       try {
         await this.getDaily()
@@ -86,11 +86,7 @@ export default {
   },
   mounted() {
     this.fetchData()
-  },
-  updated() {
-    setTimeout(() => {
-      this.methods.postRefreshToken()
-    }, 1000)
+    this.autoRefreshToken()
   },
 }
 </script>

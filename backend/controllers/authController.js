@@ -156,7 +156,7 @@ exports.logout = async (req, res) => {
       // Find user and remove refresh token
       await User.findOneAndUpdate(
         { refreshToken },
-        { refreshToken: null }
+        { refreshToken: null,accessToken:null },
       );
     }
 
