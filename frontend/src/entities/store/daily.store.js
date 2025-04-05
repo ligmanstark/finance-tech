@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 export const useDaily = defineStore('daily', {
   state: () => ({
-    dailyData: [], // исправлено название
+    dailyData: [],
   }),
   actions: {
     async getDaily() {

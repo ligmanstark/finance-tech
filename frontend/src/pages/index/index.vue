@@ -16,9 +16,14 @@ import { barData, radarData } from '@/pages/index/_data/charts.data.js'
 import { barChartCreator } from '@/entities/charts/bar.charts.js'
 import { radarChartCreator } from '@/entities/charts/radarSkillPoint.charts.js'
 import { barLinesChart } from '@/entities/charts/bar&lines.charts.js'
+import { mapActions } from 'pinia'
+import { Auth } from '@/entities/store/auth.store.js'
 
 export default {
   name: 'mainPage',
+  methods: {
+    ...mapActions(Auth, ['autoRefreshToken']),
+  },
   mounted() {
     const idBar = document.querySelector('#bar')
     const idRadar = document.querySelector('#radar')
@@ -26,6 +31,8 @@ export default {
     barChartCreator(idBar, barData)
     radarChartCreator(idRadar, radarData)
     barLinesChart(idBarLines)
+
+    this.autoRefreshToken()
   },
 }
 </script>

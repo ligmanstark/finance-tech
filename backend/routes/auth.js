@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const verifyToken = require('../middleware/auth');
-const checkRole = require('../middleware/checkRole');
+const { verifyToken, checkRole } = require('../middleware/auth');
 
 // Public routes
 router.post('/register', authController.register);
@@ -11,20 +10,10 @@ router.post('/refresh-token', authController.refreshToken);
 router.post('/logout', authController.logout);
 
 // Protected routes
-router.get('/profile', verifyToken, (req, res) => {
-  res.json({
-    message: 'Profile data',
-    user: {
-      id: req.user._id,
-      email: req.user.email,
-      role: req.user.role
-    }
-  });
+router.get('/profile', verifyToken, authController.getProfile);
 
-});
+// Admin routes
+router.get('/users', verifyToken, checkRole(['admin']), authController.getAllUsers);
+router.patch('/users/:userId/role', verifyToken, checkRole(['admin']), authController.updateUserRole);
 
-// Admin only routes
-router.get('/users', verifyToken, checkRole('admin'), authController.getAllUsers);
-router.patch('/users/:userId/role', verifyToken, checkRole('admin'), authController.updateUserRole);
-
-module.exports = router;
+module.exports = router; 

@@ -2,14 +2,13 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/auth");
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
-console.log(process.env.MONGO_URI);
+// MongoDB connection with retry
 const connectionWithRetry = async (attempts = 3) => {
   for (let i = 0; i < attempts; i++) {
     try {
@@ -37,19 +36,22 @@ const connectionWithRetry = async (attempts = 3) => {
 
 connectionWithRetry();
 
+// Middleware
 app.use(express.json());
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    credentials: true
-  }),
-);
-app.use(cookieParser());
+app.use(cors());
 
+// Routes
 app.use("/api/auth", authRoutes);
 
+// Health check route
 app.get("/health", function (req, res) {
   res.json({ status: "ok" });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
 app.listen(PORT, () => {

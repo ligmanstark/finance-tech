@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    default: user._id,
-  },
   email: {
     type: String,
     required: true,
@@ -24,16 +20,19 @@ const userSchema = new mongoose.Schema({
     default: 'user'
   },
   refreshToken: {
-    type: String
+    type: String,
+    default: null
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-}, {
-  timestamps: true
 });
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
-
+  
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -43,21 +42,22 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// Method to compare password
+// Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+  try {
+    return await bcrypt.compare(candidatePassword, this.password);
+  } catch (error) {
+    throw error;
+  }
 };
 
-// Method to check if user has required role
+// Check if user has specific role
 userSchema.methods.hasRole = function(role) {
-  const roles = {
-    user: 0,
-    moderator: 1,
-    admin: 2
-  };
-  return roles[this.role] >= roles[role];
+  return this.role === role;
 };
 
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
+
+ 
