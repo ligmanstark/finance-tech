@@ -99,11 +99,14 @@ export default {
     isAuthCheck() {
       return this.nonAuth
     },
+    // eslint-disable-next-line vue/return-in-computed-property
     isAdmin() {
-      return (
-        JSON.parse(localStorage.getItem('user')).user.role ??
-        JSON.parse(localStorage.getItem('user')).user.role === 'admin'
-      )
+      try {
+        const userData = JSON.parse(localStorage.getItem('user'))
+        return userData && userData.user?.role === 'admin'
+      } catch (e) {
+        console.error(e)
+      }
     },
   },
   methods: {

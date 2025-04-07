@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 
 export const UsersApi = defineStore('users', {
+  state: {
+    users: [],
+  },
   actions: {
     async getUsers() {
       try {
@@ -14,8 +17,7 @@ export const UsersApi = defineStore('users', {
             },
           },
         )
-        const json = await response.json()
-        console.log(json)
+        this.users = await response.json()
       } catch (err) {
         console.error(err)
       }

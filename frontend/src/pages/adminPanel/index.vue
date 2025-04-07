@@ -17,12 +17,12 @@
   <!--    </template>-->
   <!--  </section-content>-->
   <div>
-    {{ usersData }}
+    {{ getAllUsers }}
   </div>
 </template>
 
 <script>
-import { mapActions } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { Auth } from '@/entities/store/auth.store.js'
 import SectionContent from '@/pages/adminPanel/_ui/sectionContent.vue'
 import { UsersApi } from '@/entities/store/users.store.js'
@@ -46,10 +46,15 @@ export default {
       }
     },
   },
-
+  computed: {
+    ...mapState(UsersApi, ['users']),
+    getAllUsers() {
+      return this.users
+    },
+  },
   mounted() {
     this.autoRefreshToken()
-    this.usersData = this.getUsersData()
+    this.getUsersData()
   },
 }
 </script>
