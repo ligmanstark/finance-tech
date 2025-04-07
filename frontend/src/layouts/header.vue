@@ -43,29 +43,46 @@
         </h1>
       </div>
       <NavMenu />
-      <Button
-        v-slot="slotProps"
-        size="small"
-        variant="outlined"
-        class="w-20 [&]:text-white [&]:border"
-        asChild
-      >
-        <RouterLink
-          v-if="isAuthCheck"
-          class="w-20 rounded-sm hover:bg-white hover:text-green-400 hover:border-green-400 text-white border"
-          :class="slotProps"
-          to="/login"
-          >Войти</RouterLink
+      <div class="flex gap-2">
+        <Button
+          v-if="isAdmin"
+          v-slot="slotProps"
+          size="small"
+          variant="outlined"
+          class="w-20 [&]:text-white [&]:border"
+          asChild
         >
-        <button
-          v-else
-          @click="Logout"
-          class="w-20 rounded-sm hover:bg-white hover:text-green-400 hover:border-green-400 text-white border"
-          :class="slotProps"
+          <RouterLink
+            class="w-20 rounded-sm hover:bg-white hover:text-green-400 hover:border-green-400 text-white border"
+            :class="slotProps"
+            to="/admin-panel"
+            >Админка</RouterLink
+          ></Button
         >
-          Выйти
-        </button>
-      </Button>
+        <Button
+          v-slot="slotProps"
+          size="small"
+          variant="outlined"
+          class="w-20 [&]:text-white [&]:border"
+          asChild
+        >
+          <RouterLink
+            v-if="isAuthCheck"
+            class="w-20 rounded-sm hover:bg-white hover:text-green-400 hover:border-green-400 text-white border"
+            :class="slotProps"
+            to="/login"
+            >Войти</RouterLink
+          >
+          <button
+            v-else
+            @click="Logout"
+            class="w-20 rounded-sm hover:bg-white hover:text-green-400 hover:border-green-400 text-white border"
+            :class="slotProps"
+          >
+            Выйти
+          </button>
+        </Button>
+      </div>
     </div>
   </header>
 </template>
@@ -81,6 +98,12 @@ export default {
     ...mapState(Auth, ['nonAuth']),
     isAuthCheck() {
       return this.nonAuth
+    },
+    isAdmin() {
+      return (
+        JSON.parse(localStorage.getItem('user')).user.role ??
+        JSON.parse(localStorage.getItem('user')).user.role === 'admin'
+      )
     },
   },
   methods: {

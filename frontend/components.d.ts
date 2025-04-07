@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Button: typeof import('primevue/button')['default']
     Column: typeof import('primevue/column')['default']
+    ColumnGroup: typeof import('primevue/columngroup')['default']
     DataTable: typeof import('primevue/datatable')['default']
     Form: typeof import('@primevue/forms/form')['default']
     FormField: typeof import('@primevue/forms/formfield')['default']

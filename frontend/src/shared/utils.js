@@ -37,4 +37,24 @@ const Utils = {
   },
 }
 
-export { Utils }
+//Router utils
+const isAuth = () => {
+  return !!localStorage.getItem('user')
+}
+
+const guard = (to, from, next) => {
+  if (isAuth()) {
+    next()
+  } else {
+    next('/login')
+  }
+}
+
+const guardAdmin = (to, from, next) => {
+  if (JSON.parse(localStorage.getItem('user')).user.role === 'admin') {
+    next()
+  } else {
+    return null
+  }
+}
+export { Utils, guard, guardAdmin }
