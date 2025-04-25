@@ -1,5 +1,3 @@
-import { barLinesChart } from '@/entities/charts/bar&lines.charts.js'
-
 const countrys = {
   AED: 'ae', // ОАЭ
   AFN: 'af', // Афганистан
